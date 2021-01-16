@@ -1,6 +1,7 @@
 const express = require('express');
 const promotionRouter = express.Router();
 const Promotion = require('../models/promotions');
+const authenticate = require('../authenticate');
 
 promotionRouter.route('/')
 
@@ -13,7 +14,7 @@ promotionRouter.route('/')
             })
             .catch(err => next(err));
     })
-    .post((req, res, next) => {
+    .post(authenticate.verifyUser, (req, res, next) => {
         Promotion.create(req.body)
             .then(promotion => {
                 console.log('promotion created', promotion);
@@ -24,11 +25,11 @@ promotionRouter.route('/')
             .catch(err => next(err));
     })
 
-    .put((req, res) => {
+    .put(authenticate.verifyUser, (req, res) => {
         res.statusCode = 403;
         res.end('PUT operation not supported on /promotions');
     })
-    .delete((req, res, next) => {
+    .delete(authenticate.verifyUser, (req, res, next) => {
         Promotion.deleteMany()
             .then(response => {
                 res.statusCode = 200;
@@ -50,7 +51,7 @@ promotionRouter.route('/:promotionId')
             .catch(err => next(err));
     })
 
-    .post((req, res, next) => {
+    .post(authenticate.verifyUser, (req, res, next) => {
         Promotion.create(req.body)
             .then(promotion => {
                 console.log('promotion created', promotion);
@@ -60,11 +61,11 @@ promotionRouter.route('/:promotionId')
             })
             .catch(err => next(err));
     })
-    .put((req, res) => {
+    .put(authenticate.verifyUser, (req, res) => {
         res.statusCode = 403;
         res.end(`POST operation not supported on /promotions/ ${req.params.promotionId}`);
     })
-    .delete((req, res, next) => {
+    .delete(authenticate.verifyUser, (req, res, next) => {
         Promotion.delete(req.body)
             .then(promotion => {
                 console.log('promotion deleted', promotion);
@@ -78,52 +79,3 @@ promotionRouter.route('/:promotionId')
 module.exports = promotionRouter;
 
 
-
-
-// promotionRouter.route('/')
-// .all((req, res, next) => {
-//     res.statusCode = 200;
-//     res.setHeader('Content-Type', 'text/plain');
-//     next();
-// })
-// .get((req, res) => {
-//     res.end('Will send all the promotions to you');
-// })
-// .post((req, res) => {
-//     res.end(`Will add the promotion: ${req.body.name} with description: ${req.body.description}`);
-// })
-// .put((req, res) => {
-//     res.statusCode = 403;
-//     res.end('PUT operation not supported on /promotions');
-// })
-// .delete((req, res) => {
-//     res.end('Deleting all promotions');
-// });
-
-// //campsiteRouter.route()
-// promotionRouter.route('/:promotionId')
-// .all((req, res, next) => {
-//     res.statusCode = 200;
-//     res.setHeader('Content-Type', 'text/plain');
-//     next();
-// })
-// .get((req, res) => {
-//     res.end(`Will send the promotion: ${req.params.promotionId} to you`);
-// })
-// .post((req, res) => {
-//     // res.end(`Will add the campsite: ${req.body.name} with description: ${req.body.description}`);
-//     res.statusCode = 403;
-//     res.end(`POST operation not supported on /promotions/ ${req.params.promotionId}`);
-// })
-// .put((req, res) => {
-//     // res.statusCode = 403;
-//     // res.end('PUT operation not supported on /campsites');
-//     res.write(`Updating the promotion: ${req.params.promotionId}\n`);
-//     res.end(`Will update the promotion: ${req.params.promotionId} with description: ${req.params.promotionId}`); 
-// })
-// .delete((req, res) => {
-//     res.end(`Deleting promotion: ${req.params.promotionId}`);
-// });
-
-
-// module.exports = promotionRouter;
