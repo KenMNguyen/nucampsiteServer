@@ -2,8 +2,9 @@ const express = require('express');
 const User = require('../models/user');
 const passport = require('passport');
 const authenticate = require('../authenticate');
-const router = express.Router();
 const cors = require('./cors');
+
+const router = express.Router();
 
 /* GET users listing. */
 router.get('/', cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, function (req, res, next) {
@@ -58,6 +59,7 @@ router.post('/login', cors.corsWithOptions, passport.authenticate('local'), (req
   res.json({ success: true, token: token, status: 'You are successfully logged in!' });
 });
 
+
 router.get('/logout', cors.corsWithOptions, (req, res, next) => {
   if (req.session) {
     req.session.destroy();
@@ -80,4 +82,3 @@ router.get('/facebook/token', passport.authenticate('facebook-token'), (req, res
 });
 
 module.exports = router;
-
